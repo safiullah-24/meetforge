@@ -2,9 +2,8 @@ import mongoose from 'mongoose';
 
 /**
  * User model for MeetForge.
- *
- * This milestone intentionally includes only the profile fields required
- * for the backend foundation and does not add auth-sensitive data.
+ * Stores user profile information and the hashed password
+ * required for authentication.
  */
 const userSchema = new mongoose.Schema(
   {
@@ -19,6 +18,11 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      select: false,
     },
   },
   {
