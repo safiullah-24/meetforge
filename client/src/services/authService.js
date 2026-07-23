@@ -33,3 +33,5 @@ const request = async (path, body) => {
 
 export const loginRequest = (payload) => request('/api/auth/login', payload);
 export const registerRequest = (payload) => request('/api/auth/register', payload);
+
+export const getApiBaseUrl = () => API_BASE_URL;
