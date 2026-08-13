@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
+import MeetingRoomPage from './pages/MeetingRoomPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
@@ -20,6 +21,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meeting/:meetingCode"
+          element={
+            <ProtectedRoute>
+              <MeetingRoomPage />
             </ProtectedRoute>
           }
         />

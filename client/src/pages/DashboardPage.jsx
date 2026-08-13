@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createMeeting, getMyMeetings, joinMeeting } from '../services/meetingService';
 
@@ -11,6 +11,7 @@ const formatDate = (dateValue) =>
 
 export default function DashboardPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, token } = useAuth();
   const [meetingTitle, setMeetingTitle] = useState('');
   const [meetingCode, setMeetingCode] = useState('');
@@ -120,7 +121,9 @@ export default function DashboardPage() {
 
     try {
       const response = await joinMeeting(token, { meetingCode: meetingCode.trim().toUpperCase() });
-      setSuccessMessage(`Joined meeting ${response.meeting.meetingCode}.`);
+      navigate(`/meeting/${response.meeting.meetingCode}`, {
+        state: { meeting: response.meeting },
+      });
       await loadMeetings();
     } catch (error) {
       setErrorMessage(error.message || 'Failed to join meeting.');
@@ -195,6 +198,13 @@ export default function DashboardPage() {
                     Code: <span className="font-mono font-semibold tracking-[0.24em]">{createdMeeting.meetingCode}</span>
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/meeting/${createdMeeting.meetingCode}`, { state: { meeting: createdMeeting } })}
+                      className="rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-100 transition hover:bg-slate-800"
+                    >
+                      Open Room
+                    </button>
                     <button
                       type="button"
                       onClick={() => copyToClipboard(createdMeeting.meetingCode, 'Meeting code')}
