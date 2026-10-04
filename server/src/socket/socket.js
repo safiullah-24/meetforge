@@ -1,9 +1,9 @@
 import { Server } from 'socket.io';
 
 const relayToRoom = (socket, eventName, payload = {}) => {
-  const roomId = socket.data.roomId || payload.roomId;
+  const roomId = socket.data.roomId;
 
-  if (!roomId) {
+  if (!roomId || (payload.roomId && payload.roomId !== roomId)) {
     return;
   }
 
@@ -29,6 +29,10 @@ const initializeSocket = (server, { corsOrigin } = {}) => {
         return;
       }
 
+      if (socket.data.roomId && socket.data.roomId !== roomId) {
+        socket.leave(socket.data.roomId);
+      }
+
       socket.data.roomId = roomId;
       socket.data.user = user || null;
       socket.join(roomId);
@@ -45,9 +49,9 @@ const initializeSocket = (server, { corsOrigin } = {}) => {
     socket.on('ice-candidate', (payload) => relayToRoom(socket, 'ice-candidate', payload));
 
     socket.on('leave-room', ({ roomId } = {}) => {
-      const activeRoomId = roomId || socket.data.roomId;
+      const activeRoomId = socket.data.roomId;
 
-      if (!activeRoomId) {
+      if (!activeRoomId || (roomId && roomId !== activeRoomId)) {
         return;
       }
 
